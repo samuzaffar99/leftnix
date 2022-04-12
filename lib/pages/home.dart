@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:leftnix/chain.dart';
+import 'package:leftnix/model.dart';
 import 'package:leftnix/widgets.dart';
 
 class HomePage extends StatelessWidget {
@@ -40,7 +42,11 @@ class HomePage extends StatelessWidget {
                 UserBanner(
                   profile: _profile,
                 ),
-                ...[1, 6, 12].map((e) => const PlanCard()),
+                ...[
+                  Plan("1 Month", 2, 1),
+                  Plan("6 Month", 5, 6),
+                  Plan("12 Month", 9, 12)
+                ].map((e) => PlanCard(plan: e)),
                 CustomButton(
                   prefixIcon: const Icon(Icons.exit_to_app),
                   onPressed: () => Get.toNamed("/"),
@@ -54,29 +60,6 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-}
-
-class Banner extends StatelessWidget {
-  const Banner({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: const [Icon(Icons.school)],
-      ),
-    );
-  }
-}
-
-class Profile {
-  String username;
-  String password;
-  String? expiryDate;
-
-  Profile(this.username, this.password, [this.expiryDate]);
 }
 
 class UserBanner extends StatelessWidget {
@@ -103,7 +86,14 @@ class UserBanner extends StatelessWidget {
               ),
               profile.expiryDate == null
                   ? const Text("Not Subscribed")
-                  : Text(profile.expiryDate.toString())
+                  : Text(profile.expiryDate.toString()),
+              CustomButton(
+                onPressed: () {
+                  final network = Get.find<Network>();
+                  network.getBalance();
+                },
+                labelText: "Fetch Balance",
+              )
             ],
           ),
         ),
@@ -113,7 +103,8 @@ class UserBanner extends StatelessWidget {
 }
 
 class PlanCard extends StatelessWidget {
-  const PlanCard({Key? key}) : super(key: key);
+  const PlanCard({Key? key, required this.plan}) : super(key: key);
+  final Plan plan;
 
   @override
   Widget build(BuildContext context) {
@@ -123,8 +114,9 @@ class PlanCard extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-            const Text("Yearly Plan"),
-            const Text("1 Month"),
+            Text(plan.name),
+            Text(plan.duration.toString()),
+            Text(plan.cost.toString()),
             CustomButton(
               prefixIcon: const Icon(Icons.monetization_on_outlined),
               onPressed: () {},
