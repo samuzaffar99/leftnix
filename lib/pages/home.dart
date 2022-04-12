@@ -1,21 +1,22 @@
-import 'package:leftnix/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:leftnix/widgets.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final Profile _profile = Profile("coolsam360", "123");
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          stops: [0.5, 1],
+          end: Alignment.bottomCenter,
+          stops: [0.2, 0.6],
           colors: [
-            primaryColor,
-            Colors.black,
+            Colors.red,
+            secondaryColor,
           ],
         ),
       ),
@@ -24,7 +25,7 @@ class HomePage extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           title: const Text(
-            "ACM DevDay",
+            "Leftnix",
             // style: Theme.of(context).textTheme.headline4,
           ),
           backgroundColor: Colors.transparent,
@@ -36,34 +37,16 @@ class HomePage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          "hello",
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
+                UserBanner(
+                  profile: _profile,
                 ),
+                ...[1, 6, 12].map((e) => const PlanCard()),
                 CustomButton(
-                  prefixIcon: const Icon(Icons.event),
-                  onPressed: () => Get.toNamed("/events"),
-                  labelText: "View Events",
-                ),
-                CustomButton(
-                  prefixIcon: const Icon(Icons.map_outlined),
+                  prefixIcon: const Icon(Icons.exit_to_app),
                   onPressed: () => Get.toNamed("/"),
-                  labelText: "Map",
+                  labelText: "Logout",
                 ),
-                const Banner(),
+                // const Banner(),
               ],
             ),
           ),
@@ -83,6 +66,73 @@ class Banner extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: const [Icon(Icons.school)],
+      ),
+    );
+  }
+}
+
+class Profile {
+  String username;
+  String password;
+  String? expiryDate;
+
+  Profile(this.username, this.password, [this.expiryDate]);
+}
+
+class UserBanner extends StatelessWidget {
+  final Profile profile;
+
+  const UserBanner({Key? key, required this.profile}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.maxFinite,
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                profile.username,
+                textAlign: TextAlign.center,
+              ),
+              profile.expiryDate == null
+                  ? const Text("Not Subscribed")
+                  : Text(profile.expiryDate.toString())
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class PlanCard extends StatelessWidget {
+  const PlanCard({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            const Text("Yearly Plan"),
+            const Text("1 Month"),
+            CustomButton(
+              prefixIcon: const Icon(Icons.monetization_on_outlined),
+              onPressed: () {},
+              labelText: "Subscribe",
+              primary: Colors.black,
+            ),
+          ],
+        ),
       ),
     );
   }

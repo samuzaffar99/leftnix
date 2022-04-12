@@ -61,6 +61,7 @@ class CustomButton extends StatelessWidget {
 
 class HBox extends StatelessWidget {
   final double width;
+
   const HBox(this.width, {Key? key}) : super(key: key);
 
   @override
@@ -71,6 +72,7 @@ class HBox extends StatelessWidget {
 
 class VBox extends StatelessWidget {
   final double height;
+
   const VBox(this.height, {Key? key}) : super(key: key);
 
   @override
