@@ -1,7 +1,7 @@
-import 'package:leftnix/routes.dart';
-import 'package:leftnix/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:leftnix/routes.dart';
+import 'package:leftnix/widgets.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -19,7 +19,7 @@ class App extends StatelessWidget {
         scaffoldBackgroundColor: secondaryColor,
       ),
       initialRoute: "/",
-      // getPages: Nav.routes,
+      getPages: Nav.routes,
     );
   }
 }

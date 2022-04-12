@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+
 import 'pages/home.dart';
 
 class Nav {
