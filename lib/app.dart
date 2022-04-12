@@ -18,7 +18,7 @@ class App extends StatelessWidget {
         ),
         scaffoldBackgroundColor: secondaryColor,
       ),
-      initialRoute: "/",
+      initialRoute: "/login",
       getPages: Nav.routes,
     );
   }
