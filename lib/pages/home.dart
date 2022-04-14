@@ -9,19 +9,10 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Profile _profile = Profile("coolsam360", "123");
+    final session = Get.find<Session>();
+    final Profile _profile = session.profile!;
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomCenter,
-          stops: [0.2, 0.6],
-          colors: [
-            Colors.red,
-            secondaryColor,
-          ],
-        ),
-      ),
+      decoration: backgroundDecor,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
@@ -45,11 +36,11 @@ class HomePage extends StatelessWidget {
                 ...[
                   Plan("1 Month", 2, 1),
                   Plan("6 Month", 5, 6),
-                  Plan("12 Month", 9, 12)
+                  Plan("12 Month", 9, 12),
                 ].map((e) => PlanCard(plan: e)),
                 CustomButton(
                   prefixIcon: const Icon(Icons.exit_to_app),
-                  onPressed: () => Get.toNamed("/"),
+                  onPressed: () => Get.offAllNamed("/login"),
                   labelText: "Logout",
                 ),
                 // const Banner(),
@@ -89,7 +80,7 @@ class UserBanner extends StatelessWidget {
                   : Text(profile.expiryDate.toString()),
               CustomButton(
                 onPressed: () {
-                  final network = Get.find<Network>();
+                  final network = Get.find<Session>();
                   network.getBalance();
                 },
                 labelText: "Fetch Balance",
@@ -102,7 +93,22 @@ class UserBanner extends StatelessWidget {
   }
 }
 
-class PlanCard extends StatelessWidget {
+class HomeController extends GetxController {
+  Profile user = Profile("coolsam360", "123");
+
+  void subscribe(Plan plan) {
+    final session = Get.find<Session>();
+    final user = session.profile!;
+    DateTime newDate = user.expiryDate == null
+        ? DateTime.now()
+        : DateTime.parse(user.expiryDate!);
+    newDate = newDate.add(Duration(days: plan.duration * 30));
+    session.subscribe(newDate);
+    return;
+  }
+}
+
+class PlanCard extends GetView<HomeController> {
   const PlanCard({Key? key, required this.plan}) : super(key: key);
   final Plan plan;
 
@@ -119,7 +125,7 @@ class PlanCard extends StatelessWidget {
             Text(plan.cost.toString()),
             CustomButton(
               prefixIcon: const Icon(Icons.monetization_on_outlined),
-              onPressed: () {},
+              onPressed: () => controller.subscribe(plan),
               labelText: "Subscribe",
               primary: Colors.black,
             ),
