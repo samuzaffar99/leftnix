@@ -42,6 +42,12 @@ class RegistrationPage extends StatelessWidget {
 class RegistrationController extends GetxController {
   final registrationForm = fb.group(
     {
+      "username": [
+        "",
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(32),
+      ],
       "key": [
         "",
         Validators.required,
@@ -72,13 +78,18 @@ class RegistrationForm extends GetView<RegistrationController> {
       formGroup: controller.registrationForm,
       child: Column(
         children: [
+          const CustomTextField(
+            formControlName: 'username',
+            labelText: "Username",
+          ),
+          const VBox(4),
           const CustomPasswordTextField(
             formControlName: 'key',
             labelText: "Key",
           ),
           ConsumerCustomButton(
             onValidPressed: () => controller.register(),
-            labelText: "Login",
+            labelText: "Register",
           ),
         ],
       ),
