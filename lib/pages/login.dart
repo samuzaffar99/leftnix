@@ -59,13 +59,15 @@ class LoginController extends GetxController {
   );
 
   Future<void> login() async {
-    String key = loginForm.value["key"] as String;
-    String username = loginForm.value["username"] as String;
+    final String key = loginForm.value["key"] as String;
     final Session session = Get.find<Session>();
-    bool existing = await session.register(key, username);
+    bool existing = await session.login(key);
     if (existing) {
+      Get.snackbar("Success!", "Login successful!");
+      session.profile = await session.fetchProfile();
       Get.offAllNamed("/home");
     } else {
+      Get.snackbar("Oops!", "User does not exist!");
       print("User does not exist!");
     }
   }
