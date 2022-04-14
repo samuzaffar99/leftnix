@@ -12,15 +12,13 @@ class Session extends GetxService {
 
   late Web3Client ethClient;
   late Subscription contract;
-  late EthereumAddress address;
   Profile? profile;
 
-  EthPrivateKey credentials = EthPrivateKey.fromHex(privateKey);
+  late EthPrivateKey credentials;
 
   Future<Session> init() async {
     ethClient = Web3Client(apiUrl, httpClient);
-    address = await credentials.extractAddress();
-    print(address.hex);
+    // print(address.hex);
     contract = Subscription(
         address: EthereumAddress.fromHex(contractAddress), client: ethClient);
     return this;
@@ -36,8 +34,9 @@ class Session extends GetxService {
 
   Future<bool> login(String key) async {
     credentials = EthPrivateKey.fromHex(key);
+    print(credentials.address);
     try {
-      final resp = await contract.getSubscriberInfo(address);
+      final resp = await contract.getSubscriberInfo(credentials.address);
       print(resp);
       return true;
     } catch (e) {
@@ -59,25 +58,27 @@ class Session extends GetxService {
     }
   }
 
-  void send() async {
-    final resp = await ethClient.sendTransaction(
-      credentials,
-      Transaction(
-        to: EthereumAddress.fromHex(
-            '0xC6a502fA18bF4234cE353771E73BBEA241BcE18d'),
-        gasPrice: EtherAmount.inWei(BigInt.one),
-        maxGas: 100000,
-        value: EtherAmount.fromUnitAndValue(EtherUnit.ether, 1),
-      ),
-    );
-    return;
-  }
+  // void send() async {
+  //   final resp = await ethClient.sendTransaction(
+  //     credentials,
+  //     Transaction(
+  //       to: EthereumAddress.fromHex(
+  //           '0xC6a502fA18bF4234cE353771E73BBEA241BcE18d'),
+  //       gasPrice: EtherAmount.inWei(BigInt.one),
+  //       maxGas: 100000,
+  //       value: EtherAmount.fromUnitAndValue(EtherUnit.ether, 1),
+  //     ),
+  //   );
+  //   return;
+  // }
 
-  void subscribe(DateTime newDate) async {
-    final resp = await contract.subscribe(BigInt.one, newDate.toIso8601String(),
+  void subscribe(int amount, DateTime newDate) async {
+    final bigAmount = BigInt.from(amount);
+    final resp = await contract.subscribe(bigAmount, newDate.toIso8601String(),
         credentials: credentials,
-        transaction: Transaction(value: EtherAmount.inWei(BigInt.one)));
+        transaction: Transaction(value: EtherAmount.inWei(bigAmount)));
     print(resp);
+    await fetchProfile();
     return;
     // final resp = await contract.deposit(BigInt.one,
     //     credentials: credentials,
@@ -86,8 +87,15 @@ class Session extends GetxService {
     // return;
   }
 
-  void getInfo() async {
-    final resp = await contract.getSubscriberInfo(address);
-    return;
+  Future<Profile?> fetchProfile() async {
+    try {
+      final resp = await contract.getSubscriberInfo(credentials.address);
+      Profile user = Profile(resp[0], "", resp[1] == "" ? null : resp[1]);
+      print(user.toMap());
+      return user;
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 }
