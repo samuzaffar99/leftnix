@@ -4,6 +4,14 @@ class Profile {
   String? expiryDate;
 
   Profile(this.username, this.password, [this.expiryDate]);
+
+  Map<String, dynamic> toMap() {
+    return {
+      "username": username,
+      "password": password,
+      "expiryDate": expiryDate
+    };
+  }
 }
 
 class Plan {
