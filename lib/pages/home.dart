@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:leftnix/model.dart';
@@ -9,8 +10,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final session = Get.find<Session>();
-    final Profile _profile = session.profile!;
+    // final controller = Get.put(HomeController());
+    // final session = Get.find<Session>();
     return Container(
       decoration: backgroundDecor,
       child: Scaffold(
@@ -30,13 +31,11 @@ class HomePage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                UserBanner(
-                  profile: _profile,
-                ),
+                const UserBanner(),
                 ...[
-                  Plan("1 Month", 2, 1),
-                  Plan("6 Month", 5, 6),
-                  Plan("12 Month", 9, 12),
+                  Plan("Lite", 2, 1),
+                  Plan("Regular", 5, 6),
+                  Plan("Premium", 9, 12),
                 ].map((e) => PlanCard(plan: e)),
                 CustomButton(
                   prefixIcon: const Icon(Icons.exit_to_app),
@@ -53,10 +52,8 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class UserBanner extends StatelessWidget {
-  final Profile profile;
-
-  const UserBanner({Key? key, required this.profile}) : super(key: key);
+class UserBanner extends GetView<Session> {
+  const UserBanner({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -72,17 +69,17 @@ class UserBanner extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                profile.username,
+                controller.profile?.username ?? "?",
                 textAlign: TextAlign.center,
               ),
-              profile.expiryDate == null
+              controller.profile?.expiryDate == null
                   ? const Text("Not Subscribed")
-                  : Text(profile.expiryDate.toString()),
+                  : Text(DateTime.parse(controller.profile!.expiryDate!)
+                          .isBefore(DateTime.now())
+                      ? "Expired"
+                      : controller.profile!.expiryDate!.toString()),
               CustomButton(
-                onPressed: () {
-                  final session = Get.find<Session>();
-                  session.getBalance();
-                },
+                onPressed: () => controller.getBalance(),
                 labelText: "Fetch Balance",
               )
             ],
@@ -94,8 +91,6 @@ class UserBanner extends StatelessWidget {
 }
 
 class HomeController extends GetxController {
-  Profile user = Profile("coolsam360", "123");
-
   void subscribe(Plan plan) {
     final session = Get.find<Session>();
     final user = session.profile!;
@@ -103,7 +98,7 @@ class HomeController extends GetxController {
         ? DateTime.now()
         : DateTime.parse(user.expiryDate!);
     newDate = newDate.add(Duration(days: plan.duration * 30));
-    session.subscribe(newDate);
+    session.subscribe(plan.cost, newDate);
     return;
   }
 }
@@ -119,10 +114,17 @@ class PlanCard extends GetView<HomeController> {
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(plan.name),
-            Text(plan.duration.toString()),
-            Text(plan.cost.toString()),
+            Text(
+              plan.name,
+              textScaleFactor: 1.2,
+              style: context.textTheme.headlineSmall,
+            ),
+            Text("Duration: ${plan.duration.toString()} Months",
+                style: context.textTheme.labelMedium),
+            Text("Cost: \$${plan.cost.toString()}",
+                style: context.textTheme.labelMedium),
             CustomButton(
               prefixIcon: const Icon(Icons.monetization_on_outlined),
               onPressed: () => controller.subscribe(plan),
