@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:leftnix/chain.dart';
 import 'package:leftnix/model.dart';
+import 'package:leftnix/session.dart';
 import 'package:leftnix/widgets.dart';
 
 class HomePage extends StatelessWidget {
@@ -80,8 +80,8 @@ class UserBanner extends StatelessWidget {
                   : Text(profile.expiryDate.toString()),
               CustomButton(
                 onPressed: () {
-                  final network = Get.find<Session>();
-                  network.getBalance();
+                  final session = Get.find<Session>();
+                  session.getBalance();
                 },
                 labelText: "Fetch Balance",
               )

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:leftnix/chain.dart';
+import 'package:leftnix/session.dart';
 import 'package:leftnix/widgets.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -59,8 +59,8 @@ class RegistrationController extends GetxController {
 
   Future<void> register() async {
     final String key = registrationForm.value["key"] as String;
-    final Session network = Get.find<Session>();
-    bool existing = await network.login(key);
+    final Session session = Get.find<Session>();
+    bool existing = await session.login(key);
     if (existing) {
       Get.offAllNamed("/home");
     } else {

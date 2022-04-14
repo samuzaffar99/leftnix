@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:leftnix/chain.dart';
 import 'package:leftnix/secrets.dart';
+import 'package:leftnix/session.dart';
 import 'package:leftnix/widgets.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -61,8 +61,8 @@ class LoginController extends GetxController {
   Future<void> login() async {
     String key = loginForm.value["key"] as String;
     String username = loginForm.value["username"] as String;
-    final Session network = Get.find<Session>();
-    bool existing = await network.register(key,username);
+    final Session session = Get.find<Session>();
+    bool existing = await session.register(key, username);
     if (existing) {
       Get.offAllNamed("/home");
     } else {
