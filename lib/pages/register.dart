@@ -58,13 +58,16 @@ class RegistrationController extends GetxController {
   );
 
   Future<void> register() async {
-    final String key = registrationForm.value["key"] as String;
+    String key = registrationForm.value["key"] as String;
+    String username = registrationForm.value["username"] as String;
     final Session session = Get.find<Session>();
-    bool existing = await session.login(key);
+    bool existing = await session.register(key, username);
     if (existing) {
-      Get.offAllNamed("/home");
+      Get.snackbar("Success!", "Account creation successful!");
+      Get.offAllNamed("/login");
     } else {
-      print("User does not exist!");
+      Get.snackbar("Oops!", "User already exists!");
+      print("User already exists!");
     }
   }
 }
