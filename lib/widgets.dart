@@ -198,3 +198,15 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
     );
   }
 }
+
+const backgroundDecor = BoxDecoration(
+  gradient: LinearGradient(
+    begin: Alignment.topRight,
+    end: Alignment.bottomCenter,
+    stops: [0.2, 0.6],
+    colors: [
+      Colors.red,
+      secondaryColor,
+    ],
+  ),
+);
