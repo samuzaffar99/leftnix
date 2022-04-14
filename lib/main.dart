@@ -10,5 +10,5 @@ Future<void> main() async {
 
 Future<void> initializeServices() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Get.putAsync(() => Network().init());
+  await Get.putAsync(() => Session().init());
 }
