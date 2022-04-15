@@ -10,7 +10,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(LoginController());
+    final controller = Get.put(LoginController());
     return Container(
       decoration: backgroundDecor,
       child: Scaffold(
@@ -31,6 +31,12 @@ class LoginPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const LoginForm(),
+                const VBox(12),
+                CustomButton(
+                  prefixIcon: const Icon(Icons.verified_user),
+                  onPressed: () => controller.loginMeta(),
+                  labelText: "Login with Metamask",
+                ),
                 const Text("OR"),
                 CustomButton(
                   prefixIcon: const Icon(Icons.app_registration),
@@ -62,6 +68,19 @@ class LoginController extends GetxController {
     final String key = loginForm.value["key"] as String;
     final Session session = Get.find<Session>();
     bool existing = await session.login(key);
+    if (existing) {
+      Get.snackbar("Success!", "Login successful!");
+      session.profile = await session.fetchProfile();
+      Get.offAllNamed("/home");
+    } else {
+      Get.snackbar("Oops!", "User does not exist!");
+      print("User does not exist!");
+    }
+  }
+
+  Future<void> loginMeta() async {
+    final Session session = Get.find<Session>();
+    bool existing = await session.loginMeta();
     if (existing) {
       Get.snackbar("Success!", "Login successful!");
       session.profile = await session.fetchProfile();

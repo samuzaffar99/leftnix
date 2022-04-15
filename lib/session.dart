@@ -1,3 +1,4 @@
+import 'package:flutter_web3/ethereum.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:leftnix/contracts/subscription.g.dart';
@@ -13,6 +14,7 @@ class Session extends GetxService {
   late Web3Client ethClient;
   late Subscription contract;
   Profile? profile;
+  bool isUsingMeta = false;
 
   late EthPrivateKey credentials;
 
@@ -28,12 +30,29 @@ class Session extends GetxService {
     // You can now call rpc methods. This one will query the amount of Ether you own
     EtherAmount balance = await ethClient.getBalance(credentials.address);
     double amount = balance.getValueInUnit(EtherUnit.ether);
+    Get.snackbar("Current Balance", "${amount.toStringAsFixed(2)} ETH");
     print(amount);
     return amount;
   }
 
   Future<bool> login(String key) async {
     credentials = EthPrivateKey.fromHex(key);
+    print(credentials.address);
+    try {
+      final resp = await contract.getSubscriberInfo(credentials.address);
+      print(resp);
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<bool> loginMeta() async {
+    final resp = await ethereum?.requestAccount();
+    print(resp);
+    isUsingMeta = true;
+    credentials = EthPrivateKey.fromHex(privateKey);
     print(credentials.address);
     try {
       final resp = await contract.getSubscriberInfo(credentials.address);
