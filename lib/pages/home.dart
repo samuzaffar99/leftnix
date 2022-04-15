@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:leftnix/model.dart';
@@ -10,7 +9,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final controller = Get.put(HomeController());
+    final controller = Get.put(HomeController());
     // final session = Get.find<Session>();
     return Container(
       decoration: backgroundDecor,
@@ -71,6 +70,7 @@ class UserBanner extends GetView<Session> {
               Text(
                 controller.profile?.username ?? "?",
                 textAlign: TextAlign.center,
+                textScaleFactor: 1.5,
               ),
               controller.profile?.expiryDate == null
                   ? const Text("Not Subscribed")
@@ -123,7 +123,7 @@ class PlanCard extends GetView<HomeController> {
             ),
             Text("Duration: ${plan.duration.toString()} Months",
                 style: context.textTheme.labelMedium),
-            Text("Cost: \$${plan.cost.toString()}",
+            Text("Cost: ${plan.cost.toString()} WEI",
                 style: context.textTheme.labelMedium),
             CustomButton(
               prefixIcon: const Icon(Icons.monetization_on_outlined),
